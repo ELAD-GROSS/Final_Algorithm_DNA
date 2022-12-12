@@ -38,17 +38,17 @@ def find_full_padding(read, padding_size, paddings_hash, four_pow):
 
 
 def is_padding_at_start(read, letters_amount, freq):
-    padding_partial = read[0:letters_amount+1] * (freq // (letters_amount+1))
-    padding_partial += read[0:freq % (letters_amount+1)]
+    padding_partial = read[0:letters_amount + 1] * (freq // (letters_amount + 1))
+    padding_partial += read[0:freq % (letters_amount + 1)]
     return padding_partial == read[0:freq]
 
 
-def declassify_with_padding(read, freq, padding_size, paddings_hash, letters_amount):
+def declassify_with_padding(read, freq, padding_size, paddings_hash, letters_amount, four_pow):
     # can be two cases: either the padding is somewhere in the middle, in which case it is in full length,
     # or it will be partially cut in the beginning or the end.
     # If it's in the middle,
     # we'll check if every padding_length combo of letters is one of possible paddings in the next function:
-    padding_start = find_full_padding(read, freq, padding_size, paddings_hash)
+    padding_start = find_full_padding(read, padding_size, paddings_hash, four_pow)
 
     if padding_start != NO_FULL_PADDING:
         return read[padding_start: padding_start + letters_amount], (True, padding_start)
@@ -61,6 +61,72 @@ def declassify_with_padding(read, freq, padding_size, paddings_hash, letters_amo
         else:
             return read[-letters_amount - 1:], (False, -1)
 
+
+def declassify_read(read, freq, letters_amount, classifications, padding_size, paddings_hash, four_pow,
+                    pad_to_candidates):
+    candidate_letters = find_repetitive_letters(read, letters_amount, freq, classifications)
+    # check if the function find_repetitive_letters succeeded
+    if candidate_letters != "":
+        return candidate_letters, NO_FULL_PADDING
+
+    # otherwise, there is padding that foiled the function
+
+    padding_letters, (is_full_padding, padding_start_pos) = declassify_with_padding(read, freq, padding_size,
+                                                                                    paddings_hash, letters_amount,
+                                                                                    four_pow)
+    rotated_str = padding_letters
+    for i in len(padding_letters):
+        if rotated_str in pad_to_candidates:
+            break
+        rotated_str = padding_letters[i:] + padding_letters[:i]
+
+    if not is_full_padding:
+        if padding_start_pos == 0:
+            # not full padding and padding at start, return second classification of dict
+            return pad_to_candidates[rotated_str][1], NO_FULL_PADDING
+        else:
+            return pad_to_candidates[rotated_str][0], NO_FULL_PADDING
+    else:
+        # there is full padding
+        return rotated_str, padding_start_pos
+
+
+def split_read(read, letters, padding_pos_start, pad_to_candidates, padding_size):
+    # TODO
+    pass
+
+
+def declassify_reads(reads, freq, letters_amount, classifications, padding_size, paddings_hash, four_pow,
+                     pad_to_candidates, num_of_sections):
+    reads_by_sections = [[] for _ in range(num_of_sections)]
+    letters_to_section = {classifications[i]: i for i in range(0, len(classifications))}
+
+    for read in reads:
+        letters, padding_pos_start = declassify_read(read, freq, letters_amount, classifications, padding_size,
+                                                     paddings_hash, four_pow, pad_to_candidates)
+
+        if padding_pos_start == NO_FULL_PADDING:
+            section_num = letters_to_section[letters]
+            reads_by_sections[section_num].append(read)
+
+        else:
+            # full padding, need to split read
+            section_num = letters_to_section[pad_to_candidates[letters][1]]
+            read_prev_section, read_next_section = split_read(read, letters, padding_pos_start, pad_to_candidates,
+                                                              padding_size)
+
+            if read_prev_section is not None:
+                reads_by_sections[section_num - 1].append(read_prev_section)
+            if read_next_section is not None:
+                reads_by_sections[section_num].append(read_next_section)
+
+    reads_by_sections[0].append(create_padding(padding_size, classifications[0], classifications[1]))
+    reads_by_sections[-1].append(create_padding(padding_size, classifications[-2], classifications[-1]))
+
+    # TODO - make sure the loop is in correct range
+    for i in range(1, len(classifications) - 1):
+        reads_by_sections[i].append(create_padding(padding_size, classifications[i - 1], classifications[i]))
+        reads_by_sections[i].append(create_padding(padding_size, classifications[i], classifications[i + 1]))
 
 
 if __name__ == '__main__':

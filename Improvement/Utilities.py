@@ -9,7 +9,6 @@ letter_to_base_four = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
 NO_HASH = -1
 
 
-
 def create_convert_list(read_size):
     convert_array = [1] * read_size
     for i in range(1, read_size):
@@ -91,6 +90,6 @@ def get_section_size(strand_section_len_before, frequency, read_size, letters_am
 
 def create_padding(padding_size, classification_before, classification_after):
     r = classification_before + classification_after[-1]
-    padding_size += padding_size % len(r)
+    # padding_size += padding_size % len(r)
     times_of_classify = padding_size // len(r)
-    return r * times_of_classify
+    return r * times_of_classify + r[0: padding_size % len(r)]

@@ -6,6 +6,8 @@ def possible_rotation(a):
     b = len(a)
     for i in range(b):
         c = a[i:] + a[:i]
+        if c in dict:
+            break
         lst.append(c)
     return lst
 
