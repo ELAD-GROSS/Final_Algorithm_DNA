@@ -1,6 +1,6 @@
-from Basic_Algorithm.Induced_Graph import InducedGraphAux
-from Basic_Algorithm.FinalDirectedGraph import FinalDirectedGraph
-from Basic_Algorithm.DynamicProgramming import create_guesses
+from Original_Algorithm.Induced_Graph import InducedGraphAux
+from Original_Algorithm.FinalDirectedGraph import FinalDirectedGraph
+from Original_Algorithm.DynamicProgramming import create_guesses
 
 
 def final_algorithm(strand_len, read_size, real_edge_length, original_strand, reads_lst):

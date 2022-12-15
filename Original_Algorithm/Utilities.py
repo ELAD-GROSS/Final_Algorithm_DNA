@@ -5,6 +5,7 @@ BASE_NUM = 4
 letter_to_base_four = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
 NO_HASH = -1
 
+
 def create_convert_list(read_size):
     convert_array = [1] * read_size
     for i in range(1, read_size):
@@ -72,3 +73,5 @@ def compare_reads(prefix, suffix, suffix_start, len_match):
         if prefix[i] != suffix[suffix_start + i]:
             return False
     return True
+
+

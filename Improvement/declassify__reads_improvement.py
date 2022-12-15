@@ -91,9 +91,12 @@ def declassify_read(read, freq, letters_amount, classifications, padding_size, p
         return rotated_str, padding_start_pos
 
 
-def split_read(read, letters, padding_pos_start, pad_to_candidates, padding_size):
-    # TODO
-    pass
+def split_read(read, letters, padding_pos_start):
+    prev_read = read[0:padding_pos_start] + create_padding(len(read) - padding_pos_start, letters[:-1], letters[1:])
+    next_read = create_padding(len(read) - len(read[padding_pos_start:]), letters[:-1], letters[1:]) + read[
+                                                                                                       padding_pos_start:]
+
+    return prev_read, next_read
 
 
 def declassify_reads(reads, freq, letters_amount, classifications, padding_size, paddings_hash, four_pow,
@@ -112,22 +115,22 @@ def declassify_reads(reads, freq, letters_amount, classifications, padding_size,
         else:
             # full padding, need to split read
             section_num = letters_to_section[pad_to_candidates[letters][1]]
-            read_prev_section, read_next_section = split_read(read, letters, padding_pos_start, pad_to_candidates,
-                                                              padding_size)
+            read_prev_section, read_next_section = split_read(read, letters, padding_pos_start)
 
             if read_prev_section is not None:
                 reads_by_sections[section_num - 1].append(read_prev_section)
             if read_next_section is not None:
                 reads_by_sections[section_num].append(read_next_section)
 
-    reads_by_sections[0].append(create_padding(padding_size, classifications[0], classifications[1]))
-    reads_by_sections[-1].append(create_padding(padding_size, classifications[-2], classifications[-1]))
+    reads_by_sections[0].append(create_padding(len(reads[0]), classifications[0], classifications[1]))
+    reads_by_sections[-1].append(create_padding(len(reads[0]), classifications[-2], classifications[-1]))
 
     # TODO - make sure the loop is in correct range
     for i in range(1, len(classifications) - 1):
-        reads_by_sections[i].append(create_padding(padding_size, classifications[i - 1], classifications[i]))
-        reads_by_sections[i].append(create_padding(padding_size, classifications[i], classifications[i + 1]))
+        reads_by_sections[i].append(create_padding(len(reads[0]), classifications[i - 1], classifications[i]))
+        reads_by_sections[i].append(create_padding(len(reads[0]), classifications[i], classifications[i + 1]))
 
+    return reads_by_sections
 
 if __name__ == '__main__':
     pass
