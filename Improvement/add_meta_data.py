@@ -1,7 +1,6 @@
 import textwrap
 import math
-from Improvement.Utilities import create_padding
-
+from Improvement.Utilities import create_padding_forward
 
 
 def classify_strand(strand, sections_amount, frequency, classifications, padding_size):
@@ -21,7 +20,10 @@ def classify_strand(strand, sections_amount, frequency, classifications, padding
     :param frequency: how often to insert classifications of section in data
     :return: The new strand with both ways of meta-data included
     """
-    # TODO - check if we can drop the classifications at beginning and end of each section
+    # if padding size is not a multiple of the letters_amount, this will not work!
+    if padding_size % (len(classifications[0]) + 1) != 0:
+        raise ValueError(f"The padding size must be a multiple of letters_amount + 1")
+
     sections_list = textwrap.wrap(strand, width=int(math.ceil(len(strand) / sections_amount)), break_long_words=True)
 
     for section_num in range(0, sections_amount):
@@ -30,11 +32,11 @@ def classify_strand(strand, sections_amount, frequency, classifications, padding
             "".join(sub_section + classifications[section_num] for sub_section in sub_sections)
 
         if section_num != 0:
-            padding = create_padding(padding_size, classifications[section_num - 1], classifications[section_num])
+            padding = create_padding_forward(padding_size, classifications[section_num - 1],
+                                             classifications[section_num])
             section = "".join((padding, classifications[section_num], section_without_first_classification))
         else:
             section = "".join((classifications[section_num], section_without_first_classification))
         sections_list[section_num] = section
 
     return "".join(sections_list)
-

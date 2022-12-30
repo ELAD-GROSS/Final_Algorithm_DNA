@@ -88,8 +88,42 @@ def get_section_size(strand_section_len_before, frequency, read_size, letters_am
     return int(strand_section_len_before + classify_meta_data_len + read_size)
 
 
-def create_padding(padding_size, classification_before, classification_after):
+def create_padding_forward(padding_size, classification_before, classification_after):
     r = classification_before + classification_after[-1]
     # padding_size += padding_size % len(r)
     times_of_classify = padding_size // len(r)
     return r * times_of_classify + r[0: padding_size % len(r)]
+
+
+def create_padding_backward(padding_size, classification_before, classification_after):
+    r = classification_before + classification_after[-1]
+    # padding_size += padding_size % len(r)
+    times_of_classify = padding_size // len(r)
+
+    if padding_size % len(r) == 0:
+        return r * times_of_classify
+    return r[-(padding_size % len(r)):] + r * times_of_classify
+
+
+def create_paddings_hash(classifications, padding_size):
+    paddings_hash_table = {}
+    for i in range(len(classifications) - 1):
+        padding = create_padding_forward(padding_size, classifications[i], classifications[i + 1])
+        hash_of_padding = full_hash(padding, 0, padding_size)
+
+        if hash_of_padding not in paddings_hash_table:
+            paddings_hash_table[hash_of_padding] = []
+        paddings_hash_table[hash_of_padding].append(padding)
+
+    return paddings_hash_table
+
+
+longest_seq_by_letters_amount = {
+    2: ['AC', 'CT', 'TT', 'TG', 'GC', 'CG', 'GA', 'AT', 'TA', 'AG', 'GG', 'GT', 'TC', 'CC', 'CA', 'AA'],
+
+    3: ['ACT', 'CTA', 'TAC', 'ACA', 'CAA', 'AAC', 'ACG', 'CGC', 'GCC', 'CCA', 'CAT', 'ATG', 'TGG', 'GGG', 'GGC',
+        'GCT', 'CTT', 'TTA', 'TAA', 'AAG', 'AGG', 'GGT', 'GTC', 'TCC', 'CCT', 'CTC', 'TCG', 'CGT', 'GTA', 'TAT',
+        'ATA', 'TAG', 'AGC', 'GCA', 'CAG', 'AGT', 'GTT', 'TTG', 'TGT', 'GTG', 'TGA', 'GAA', 'AAA', 'AAT', 'ATC',
+        'TCT', 'CTG', 'TGC', 'GCG', 'CGA', 'GAT', 'ATT', 'TTT', 'TTC', 'TCA', 'CAC', 'ACC', 'CCG', 'CGG', 'GGA',
+        'GAG', 'AGA', 'GAC'],
+}
