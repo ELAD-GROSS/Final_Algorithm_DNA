@@ -1,5 +1,5 @@
 import random
-from Utilities import *
+from Improvement.Utilities import *
 
 def possible_rotation(a):
     lst = []
@@ -57,7 +57,7 @@ def find_longest(letters_amount):
     start = ""
     letters = ['A', 'C', 'G', 'T']
     for i in range(letters_amount + 1):
-        start += [i % 4]
+        start += letters[i % 4]
     return find_longest_aux(start, set())
 
 def is_good(lst):

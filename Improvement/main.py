@@ -30,7 +30,7 @@ def main(sections_num, letters_amount, real_edge_len, frequency, strand_len, pad
 
     # run for each section Alex's algorithm
     # TODO: currently assuming that the strand_len / sections_num is a whole number,
-    #  change algorithm for unequal section lengths?
+    # change algorithm for unequal section lengths?
     strand_section_len_before = strand_len / sections_num
     special_section_length = get_section_size(strand_section_len_before, frequency, read_size, letters_amount)
     complete_sections = run_parallel_algorithm(reads_by_sections, read_size, real_edge_len, special_section_length)

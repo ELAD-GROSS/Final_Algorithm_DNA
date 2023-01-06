@@ -28,12 +28,13 @@ def find_repetitive_letters(read, letters_amount, frequency, classifications):
 # TODO: check for this function
 def find_full_padding(read, padding_size, paddings_hash, four_pow):
     temp_hash = full_hash(read=read, pos=0, length=padding_size)
-    for pos in range(0, len(read) - padding_size):
+    for pos in range(1, len(read) - padding_size + 1):
         if temp_hash in paddings_hash:
-            if read[pos:pos + padding_size] in paddings_hash[temp_hash]:
-                return pos
-        # check for pos-1
-        temp_hash = shift_right_hash(read, pos - 1, padding_size, temp_hash, four_pow)
+            if read[pos - 1:pos - 1 + padding_size] in paddings_hash[temp_hash]:
+                return pos - 1
+        # check for pos+1
+        # TODO: check if this is correct
+        temp_hash = shift_right_hash(read, pos, padding_size, temp_hash, four_pow)
     return NO_FULL_PADDING
 
 
@@ -75,7 +76,7 @@ def declassify_read(read, freq, letters_amount, classifications, padding_size, p
                                                                                     paddings_hash, letters_amount,
                                                                                     four_pow)
     rotated_str = padding_letters
-    for i in len(padding_letters):
+    for i in range(len(padding_letters)):
         if rotated_str in pad_to_candidates:
             break
         rotated_str = padding_letters[i:] + padding_letters[:i]
@@ -140,7 +141,6 @@ def declassify_reads(reads, freq, letters_amount, classifications, padding_size,
     reads_by_sections[0].append(create_padding_forward(padding_size, classifications[0], classifications[1]))
     reads_by_sections[-1].append(create_padding_backward(padding_size, classifications[-2], classifications[-1]))
 
-    # TODO - make sure the loop is in correct range
     for i in range(1, len(classifications) - 1):
         reads_by_sections[i].append(create_padding_backward(padding_size, classifications[i - 1], classifications[i]))
         reads_by_sections[i].append(create_padding_forward(padding_size, classifications[i], classifications[i + 1]))
