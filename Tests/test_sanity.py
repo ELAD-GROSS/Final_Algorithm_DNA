@@ -1,6 +1,6 @@
 import Utilities_Test as ut
 from Improvement.find import find_longest
-from Improvement.main import main
+from Improvement.main import main,main2_only_for_test
 from Original_Algorithm.algorithm import final_algorithm
 from Improvement.add_meta_data import classify_strand
 from Improvement import declassify_reads_improvement
@@ -23,12 +23,13 @@ def test():
     #
     # if orig_str == candidate_basic:
     #     print("control worked")
+
     longest_classifications = find_longest(letters_amount)
     classifications = longest_classifications[0: sections_num]
     classified_str = classify_strand(orig_str, sections_num, frequency, classifications, padding_size)
     classified_reads = ut.generate_reads(classified_str, len(classified_str), read_size)
-    candidate_improve = main(sections_num, letters_amount, real_edge_len, frequency, strand_len, padding_size,
-                             read_size, classified_reads, classifications)
+    candidate_improve = main2_only_for_test(sections_num, letters_amount, real_edge_len, frequency, strand_len, padding_size,
+                             read_size, read_lst=classified_reads)
     if candidate_improve == orig_str:
         print("test worked!")
 

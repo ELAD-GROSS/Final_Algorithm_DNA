@@ -125,5 +125,5 @@ longest_seq_by_letters_amount = {
         'GCT', 'CTT', 'TTA', 'TAA', 'AAG', 'AGG', 'GGT', 'GTC', 'TCC', 'CCT', 'CTC', 'TCG', 'CGT', 'GTA', 'TAT',
         'ATA', 'TAG', 'AGC', 'GCA', 'CAG', 'AGT', 'GTT', 'TTG', 'TGT', 'GTG', 'TGA', 'GAA', 'AAA', 'AAT', 'ATC',
         'TCT', 'CTG', 'TGC', 'GCG', 'CGA', 'GAT', 'ATT', 'TTT', 'TTC', 'TCA', 'CAC', 'ACC', 'CCG', 'CGG', 'GGA',
-        'GAG', 'AGA', 'GAC'],
+        'GAG', 'AGA', 'GAC']
 }

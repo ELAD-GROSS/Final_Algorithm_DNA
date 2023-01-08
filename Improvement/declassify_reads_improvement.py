@@ -68,7 +68,7 @@ def split_read(read, letters, padding_pos_start, pad_to_candidates, padding_size
 
     [classification_before, classification_after] = pad_to_candidates[letters]
 
-    padding_for_prev = create_padding_forward(padding_size - padding_pos_start, classification_before,
+    padding_for_prev = create_padding_forward(len(read) - padding_pos_start, classification_before,
                                               classification_after)
     padding_for_next = create_padding_backward(padding_pos_start, classification_before, classification_after)
 
@@ -76,7 +76,7 @@ def split_read(read, letters, padding_pos_start, pad_to_candidates, padding_size
         read_prev_section = read[0:padding_pos_start] + padding_for_prev
 
     if padding_pos_start != len(read) - padding_size:
-        read_next_section = padding_for_next + read[padding_pos_start + padding_size:]
+        read_next_section = padding_for_next + read[padding_pos_start:]
 
     return read_prev_section, read_next_section
 
@@ -119,6 +119,8 @@ def declassify_reads(reads, freq, letters_amount, classifications, padding_size,
     reads_by_sections = [[] for _ in range(num_of_sections)]
     letters_to_section = {classifications[i]: i for i in range(0, len(classifications))}
 
+    read_size = len(reads[0])
+
     for read in reads:
         letters, padding_pos_start = declassify_read(read, freq, letters_amount, classifications, padding_size,
                                                      paddings_hash, four_pow, pad_to_candidates)
@@ -138,11 +140,11 @@ def declassify_reads(reads, freq, letters_amount, classifications, padding_size,
             if read_next_section is not None:
                 reads_by_sections[section_num].append(read_next_section)
 
-    reads_by_sections[0].append(create_padding_forward(padding_size, classifications[0], classifications[1]))
-    reads_by_sections[-1].append(create_padding_backward(padding_size, classifications[-2], classifications[-1]))
+    reads_by_sections[0].append(create_padding_forward(read_size, classifications[0], classifications[1]))
+    reads_by_sections[-1].append(create_padding_backward(read_size, classifications[-2], classifications[-1]))
 
     for i in range(1, len(classifications) - 1):
-        reads_by_sections[i].append(create_padding_backward(padding_size, classifications[i - 1], classifications[i]))
-        reads_by_sections[i].append(create_padding_forward(padding_size, classifications[i], classifications[i + 1]))
+        reads_by_sections[i].append(create_padding_backward(read_size, classifications[i - 1], classifications[i]))
+        reads_by_sections[i].append(create_padding_forward(read_size, classifications[i], classifications[i + 1]))
 
     return reads_by_sections
