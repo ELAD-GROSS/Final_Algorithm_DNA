@@ -1,19 +1,21 @@
+from Improvement.Utilities import create_paddings_hash
 from Improvement.remove_meta_data import remove_meta_data
-from declassify__reads_improvement import declassify_reads
+from Improvement.declassify_reads_improvement import declassify_reads
 from Utilities import *
-from Parallel_Algorithm_Improved import run_parallel_algorithm
+from Improvement.Parallel_Algorithm_Improved import run_parallel_algorithm
 from Improvement.find import find_longest
 
+
 def main(sections_num, letters_amount, real_edge_len, frequency, strand_len, padding_size, read_size,
-                    read_lst):
+         read_lst, classifications):
     # declassify each read by its section
     four_pow = create_convert_list(read_size)
     try:
         # TODO: create one function after meeting Eitan?
         # classifications = create_longest_classifications(letters_amount, sections_num)
-        longest_classifications = find_longest(letters_amount)
-        classifications = longest_classifications[0: sections_num]
-        paddings_hash = create_paddings_hash(classifications,padding_size)
+        # longest_classifications = find_longest(letters_amount)
+        # classifications = longest_classifications[0: sections_num]
+        paddings_hash = create_paddings_hash(classifications, padding_size)
         paddings_to_classifications = {}
 
         for i in range(sections_num - 1):
@@ -24,7 +26,7 @@ def main(sections_num, letters_amount, real_edge_len, frequency, strand_len, pad
         print("Can't create this many sections with only this amount of letters")
         exit(0)
 
-    reads_by_sections, paddings_by_sections = declassify_reads(read_lst, frequency, letters_amount, classifications,
+    reads_by_sections = declassify_reads(read_lst, frequency, letters_amount, classifications,
                                                                padding_size, paddings_hash, four_pow,
                                                                paddings_to_classifications, sections_num)
 

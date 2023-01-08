@@ -197,40 +197,40 @@ def main():
     #                       classifications))
 
     section_amount = 10
-    letters_amount = 4
-    frequency = 20
-    read_size = 200
-    g_freq = 30
-    strand_length = 500000
-    padding = (g_freq - 1) * "A" + "G" + (read_size - g_freq * 2) * "A" + "G" + (g_freq - 1) * "A"
+    # letters_amount = 4
+    # frequency = 20
+    # read_size = 200
+    # g_freq = 30
+    # strand_length = 500000
     # padding = (g_freq - 1) * "A" + "G" + (read_size - g_freq * 2) * "A" + "G" + (g_freq - 1) * "A"
-
-    # classifications = ut.create_classification(section_amount, letters_amount)
-    classifications = ""
-    print(classifications)
-    strand = ut.generate_strand(strand_length)
-    classified_strand = classify_strand(strand, section_amount, frequency, classifications, g_freq, read_size)
-    # print(strand)
-    dict_reads = generate_reads_2(classified_strand, read_size, strand_length, section_amount, frequency,
-                                  letters_amount)
-    reads_lst = []
-    for read in dict_reads.keys():
-        reads_lst.append(read)
-    reads_by_sections, padding_by_sections = declassify_reads(reads_lst, section_amount, letters_amount, frequency,
-                                                              g_freq, classifications, padding)
-    i = 0
-    num_of_errors = 0
-    for section in reads_by_sections:
-        for read in section:
-            if dict_reads[read] != i:
-                num_of_errors += 1
-                print("Mismatch:")
-                print(f"read: {read}")
-                print(f"we declassified as section {i}")
-                print(f"the test showed section {dict_reads[read]}\n")
-        i += 1
-    print(f"errors: {num_of_errors}")
-
+    # # padding = (g_freq - 1) * "A" + "G" + (read_size - g_freq * 2) * "A" + "G" + (g_freq - 1) * "A"
+    #
+    # # classifications = ut.create_classification(section_amount, letters_amount)
+    # classifications = ""
+    # print(classifications)
+    # strand = ut.generate_strand(strand_length)
+    # classified_strand = classify_strand(strand, section_amount, frequency, classifications, g_freq, read_size)
+    # # print(strand)
+    # dict_reads = generate_reads_2(classified_strand, read_size, strand_length, section_amount, frequency,
+    #                               letters_amount)
+    # reads_lst = []
+    # for read in dict_reads.keys():
+    #     reads_lst.append(read)
+    # reads_by_sections, padding_by_sections = declassify_reads(reads_lst, section_amount, letters_amount, frequency,
+    #                                                           g_freq, classifications, padding)
+    # i = 0
+    # num_of_errors = 0
+    # for section in reads_by_sections:
+    #     for read in section:
+    #         if dict_reads[read] != i:
+    #             num_of_errors += 1
+    #             print("Mismatch:")
+    #             print(f"read: {read}")
+    #             print(f"we declassified as section {i}")
+    #             print(f"the test showed section {dict_reads[read]}\n")
+    #     i += 1
+    # print(f"errors: {num_of_errors}")
+    #
 
 letters = ['A', 'C', 'G', 'T']
 

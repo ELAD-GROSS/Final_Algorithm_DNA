@@ -1,5 +1,5 @@
-from Basic_Algorithm.Graph import *
-from Basic_Algorithm.Utilities import *
+from Original_Algorithm.Graph import *
+from Original_Algorithm.Utilities import *
 
 class InducedGraphAux:
 

@@ -1,5 +1,5 @@
 from typing import List
-from Basic_Algorithm.FinalDirectedGraph import *
+from Original_Algorithm.FinalDirectedGraph import *
 
 list_of_candidates = []
 

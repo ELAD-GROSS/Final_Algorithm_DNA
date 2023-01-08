@@ -1,5 +1,5 @@
 import Utilities_Test as ut
-from Basic_Algorithm import algorithm
+from Original_Algorithm import algorithm
 from Parallel_Algorithm.classify_strand_sections import classify_strand
 from Parallel_Algorithm.Parallel_Algorithm import final_algorithm
 import time

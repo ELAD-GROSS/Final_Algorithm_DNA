@@ -37,5 +37,5 @@ def find_full_padding(read, padding_size, paddings_hash, four_pow):
         temp_hash = shift_right_hash(read, pos , padding_size, temp_hash, four_pow)
     return -1
 
-
-print(find_full_padding(st, 30, padding_hash, four_pow))
+a = find_full_padding(st, 30, padding_hash, four_pow)
+print(st[a: a + 30])

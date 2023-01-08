@@ -52,7 +52,7 @@ def declassify_with_padding(read, freq, padding_size, paddings_hash, letters_amo
     padding_start = find_full_padding(read, padding_size, paddings_hash, four_pow)
 
     if padding_start != NO_FULL_PADDING:
-        return read[padding_start: padding_start + letters_amount], (True, padding_start)
+        return read[padding_start: padding_start + letters_amount + 1], (True, padding_start)
     # otherwise, the padding is partial and in either the beginning or the end
     else:
         is_at_start = is_padding_at_start(read, letters_amount, freq)
@@ -62,6 +62,28 @@ def declassify_with_padding(read, freq, padding_size, paddings_hash, letters_amo
         else:
             return read[-letters_amount - 1:], (False, -1)
 
+
+def split_read(read, letters, padding_pos_start, pad_to_candidates, padding_size):
+    read_prev_section, read_next_section = None, None
+
+    [classification_before, classification_after] = pad_to_candidates[letters]
+
+    padding_for_prev = create_padding_forward(padding_size - padding_pos_start, classification_before,
+                                              classification_after)
+    padding_for_next = create_padding_backward(padding_pos_start, classification_before, classification_after)
+
+    if padding_pos_start != 0:
+        read_prev_section = read[0:padding_pos_start] + padding_for_prev
+
+    if padding_pos_start != len(read) - padding_size:
+        read_next_section = padding_for_next + read[padding_pos_start + padding_size:]
+
+    return read_prev_section, read_next_section
+
+
+# data1 + ACTACTACTACT + data2
+#  prev  = data1 + ACT....
+#  padd + padding data2 ->   CTACTAC T ACTACTACTACT data2
 
 def declassify_read(read, freq, letters_amount, classifications, padding_size, paddings_hash, four_pow,
                     pad_to_candidates):
@@ -90,28 +112,6 @@ def declassify_read(read, freq, letters_amount, classifications, padding_size, p
     else:
         # there is full padding
         return rotated_str, padding_start_pos
-
-
-# data1 + ACTACTACTACT + data2
-#  prev  = data1 + ACT....
-#  padd + padding data2 ->   CTACTAC T ACTACTACTACT data2
-
-def split_read(read, letters, padding_pos_start, pad_to_candidates, padding_size):
-    read_prev_section, read_next_section = None, None
-
-    [classification_before, classification_after] = pad_to_candidates[letters]
-
-    padding_for_prev = create_padding_forward(padding_size - padding_pos_start, classification_before,
-                                              classification_after)
-    padding_for_next = create_padding_backward(padding_pos_start, classification_before, classification_after)
-
-    if padding_pos_start != 0:
-        read_prev_section = read[0:padding_pos_start] + padding_for_prev
-
-    if padding_pos_start != len(read) - padding_size:
-        read_next_section = padding_for_next + read[padding_pos_start + padding_size:]
-
-    return read_prev_section, read_next_section
 
 
 def declassify_reads(reads, freq, letters_amount, classifications, padding_size, paddings_hash, four_pow,
@@ -145,6 +145,4 @@ def declassify_reads(reads, freq, letters_amount, classifications, padding_size,
         reads_by_sections[i].append(create_padding_backward(padding_size, classifications[i - 1], classifications[i]))
         reads_by_sections[i].append(create_padding_forward(padding_size, classifications[i], classifications[i + 1]))
 
-
-if __name__ == '__main__':
-    pass
+    return reads_by_sections
