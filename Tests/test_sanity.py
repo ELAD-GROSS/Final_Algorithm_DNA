@@ -10,12 +10,23 @@ def test():
     # def main(sections_num, letters_amount, real_edge_len, frequency, strand_len, padding_size, read_size,
     #          read_lst):
     sections_num = 10
-    letters_amount = 2
+    letters_amount = 3
     real_edge_len = 20
     frequency = 10
     strand_len = 100_000
     padding_size = 30
     read_size = 100
+
+    sections_num = 4
+    letters_amount = 2
+    real_edge_len = 20
+    frequency = 10
+    strand_len = 10000
+    padding_size = 30
+    read_size = 100
+
+
+
     orig_str = ut.generate_strand(strand_len)
 
     # orig_reads = ut.generate_reads(orig_str, strand_len, read_size)
@@ -30,6 +41,8 @@ def test():
     classified_reads = ut.generate_reads(classified_str, len(classified_str), read_size)
     candidate_improve = main2_only_for_test(sections_num, letters_amount, real_edge_len, frequency, strand_len, padding_size,
                              read_size, read_lst=classified_reads)
+    # print(f"original: {orig_str}")
+    # print(f"candidate: {candidate_improve}")
     if candidate_improve == orig_str:
         print("test worked!")
 

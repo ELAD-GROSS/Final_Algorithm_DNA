@@ -41,6 +41,7 @@ class FinalDirectedGraph(Graph):
         vertex = root
 
         while self.induced_graph.dict_graph[vertex]:
+
             [edge] = self.induced_graph.dict_graph[vertex]
             join_tuple = (new_vertex, edge.next_vertex[edge.weight:])
             new_vertex = "".join(join_tuple)
@@ -49,9 +50,8 @@ class FinalDirectedGraph(Graph):
             vertex = edge.next_vertex
             if index > self.induced_graph.get_number_of_vertices():
                 # a very rare case
-                # print("ERROR---CYCLIC")
-                # return ""
-                continue
+                print("ERROR---CYCLIC")
+                return ""
 
         return new_vertex
 

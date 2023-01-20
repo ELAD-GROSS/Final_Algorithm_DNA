@@ -1,5 +1,6 @@
-from Original_Algorithm.Graph import *
+from Improvement.Graph import *
 from Original_Algorithm.Utilities import *
+
 
 class InducedGraphAux:
 
@@ -36,7 +37,6 @@ class InducedGraphAux:
 
     # second step in algorithm
     def second_step(self, graph):
-        # TODO: check if suffix == prefix, and if so continue without connecting edge
         for i in range(self.reads_number):
             read = self.reads_lst[i]
             prev_hash = self.last_prefix_hash[i]
@@ -50,10 +50,13 @@ class InducedGraphAux:
                 self.hash_of_indexes[suffix_hash] = []
 
             for j in self.hash_of_indexes[suffix_hash]:
-
+                if i == j:
+                    continue
                 # prefix = self.reads_lst[j][:self.read_size - 1]
                 # suffix = self.reads_lst[i][1:]
                 if compare_reads(self.reads_lst[j], self.reads_lst[i], 1, self.read_size - 1):
+                    if self.reads_lst[i] in graph.dict_graph:
+                        continue
                     edge = Edge(self.read_size - 1, self.reads_lst[j])
 
                     graph.add_edge(self.reads_lst[i], edge)
@@ -71,7 +74,6 @@ class InducedGraphAux:
                     break
 
     def third_step(self, graph):
-        # TODO: check if suffix == prefix, and if so continue without connecting edge
         for match_len in range(self.read_size - 2, self.real_edge_size - 1, -1):
             self.hash_of_indexes = {}
 
@@ -109,12 +111,16 @@ class InducedGraphAux:
 
                 # check for matches
                 for j in self.hash_of_indexes[hash_output]:
+                    if i == j:
+                        continue
                     # prefix = self.reads_lst[j][:match_len]
                     # suffix = self.reads_lst[i][self.read_size - match_len:]
 
                     if compare_reads(self.reads_lst[j], self.reads_lst[i], self.read_size - match_len, match_len):
                         edge = Edge(match_len, self.reads_lst[j])
 
+                        if self.reads_lst[i] in graph.dict_graph:
+                            continue
                         graph.add_edge(self.reads_lst[i], edge)
 
                         self.hash_of_indexes[hash_output].remove(j)

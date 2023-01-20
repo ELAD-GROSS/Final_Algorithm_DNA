@@ -93,7 +93,6 @@ def declassify_read(read, freq, letters_amount, classifications, padding_size, p
         return candidate_letters, NO_FULL_PADDING
 
     # otherwise, there is padding that foiled the function
-
     padding_letters, (is_full_padding, padding_start_pos) = declassify_with_padding(read, freq, padding_size,
                                                                                     paddings_hash, letters_amount,
                                                                                     four_pow)
@@ -116,10 +115,15 @@ def declassify_read(read, freq, letters_amount, classifications, padding_size, p
 
 def declassify_reads(reads, freq, letters_amount, classifications, padding_size, paddings_hash, four_pow,
                      pad_to_candidates, num_of_sections):
+    read_prev_section = None
+    read_next_section = None
+
+    maxes_arr_indexes = [[0, 0] for _ in range(num_of_sections)]
+    maxes_arr_reads = [["", ""] for _ in range(num_of_sections)]
+
+
     reads_by_sections = [[] for _ in range(num_of_sections)]
     letters_to_section = {classifications[i]: i for i in range(0, len(classifications))}
-
-    read_size = len(reads[0])
 
     for read in reads:
         letters, padding_pos_start = declassify_read(read, freq, letters_amount, classifications, padding_size,
@@ -134,17 +138,22 @@ def declassify_reads(reads, freq, letters_amount, classifications, padding_size,
             section_num = letters_to_section[pad_to_candidates[letters][1]]
             read_prev_section, read_next_section = split_read(read, letters, padding_pos_start, pad_to_candidates,
                                                               padding_size)
+            # TODO: check the indexes on the arrays
+            # TODO: add documentation
+            if read_prev_section is not None and padding_pos_start > maxes_arr_indexes[section_num - 1][1]:
+                maxes_arr_reads[section_num - 1][1] = read_prev_section
+                maxes_arr_indexes[section_num - 1][1] = padding_pos_start
+            if read_next_section is not None and len(read) - padding_pos_start - padding_size > \
+                    maxes_arr_indexes[section_num][0]:
+                maxes_arr_reads[section_num][0] = read_next_section
+                maxes_arr_indexes[section_num][0] = len(read) - padding_pos_start - padding_size
 
-            if read_prev_section is not None:
-                reads_by_sections[section_num - 1].append(read_prev_section)
-            if read_next_section is not None:
-                reads_by_sections[section_num].append(read_next_section)
+    for section_num in range(num_of_sections):
+        if maxes_arr_reads[section_num][0] != "":
+            reads_by_sections[section_num].append(maxes_arr_reads[section_num][0])
 
-    reads_by_sections[0].append(create_padding_forward(read_size, classifications[0], classifications[1]))
-    reads_by_sections[-1].append(create_padding_backward(read_size, classifications[-2], classifications[-1]))
+        if maxes_arr_reads[section_num][1] != "":
+            reads_by_sections[section_num].append(maxes_arr_reads[section_num][1])
 
-    for i in range(1, len(classifications) - 1):
-        reads_by_sections[i].append(create_padding_backward(read_size, classifications[i - 1], classifications[i]))
-        reads_by_sections[i].append(create_padding_forward(read_size, classifications[i], classifications[i + 1]))
+    return reads_by_sections, maxes_arr_indexes
 
-    return reads_by_sections
