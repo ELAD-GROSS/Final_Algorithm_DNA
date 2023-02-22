@@ -77,6 +77,9 @@ def run_parallel_algorithm_not_really_parallel(reads_lst, read_size, real_edge_l
     :return: If successful, then a list containing the sections of the original string, otherwise the list will have
              Nones in it which will indicate that the algorithm failed in at least one of the parallel sections
     """
+    # section_before padding section_after
+    # section_before big_padding
+    # big_padding section_after
 
     section_amount = len(reads_lst)
     shared_dict = dict()
@@ -86,8 +89,10 @@ def run_parallel_algorithm_not_really_parallel(reads_lst, read_size, real_edge_l
         section_len = section_len_no_padding
 
         if section != section_amount - 1:
+            # adding padding length for end of section
             section_len += read_size - max_splits_arr[section][1]
         if section != 0:
+            # adding padding length for start of section
             section_len += read_size - max_splits_arr[section][0]
 
 

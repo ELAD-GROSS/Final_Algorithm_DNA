@@ -7,16 +7,18 @@ def remove_meta_data(sections_num, strings_list, frequency, letters_amount, read
 
 
 def remove_padding(sections_amount, strings_list, read_size, letters_amount, max_splits_arr):
-    # TODO: find the bug
-    for section_num in range(sections_amount):
-        if section_num == 0:
-            strings_list[section_num] = strings_list[section_num][: -read_size + max_splits_arr[section_num][1] + letters_amount]
 
-        elif section_num == sections_amount - 1:
-            strings_list[section_num] = strings_list[section_num][read_size - max_splits_arr[section_num][0]:]
-        else:
-            strings_list[section_num] = strings_list[section_num][read_size - max_splits_arr[section_num][0]: -read_size + max_splits_arr[section_num][1] + letters_amount]
+    first_section = 0
+    last_section = sections_amount - 1
+
+    strings_list[first_section] = strings_list[first_section][: -(read_size - max_splits_arr[first_section][1])]
+    strings_list[last_section] = strings_list[last_section][read_size - max_splits_arr[last_section][0]:] # this might be wrong
+
+    for section_num in range(1, sections_amount - 1):
+        strings_list[section_num] = strings_list[section_num][read_size - max_splits_arr[last_section][0]: -(read_size - max_splits_arr[first_section][1])]
+
     return strings_list
+
 
 
 def remove_classifications(sections_amount, strings_list, frequency, letters_amount):
@@ -25,7 +27,8 @@ def remove_classifications(sections_amount, strings_list, frequency, letters_amo
     for section_num in range(sections_amount):
         sub_sections = textwrap.wrap(strings_list[section_num], width=frequency + letters_amount, break_long_words=True)
         section = "".join(sub_section[letters_amount:] for sub_section in sub_sections)
-        sections.append(section[:-letters_amount])
+        # sections.append(section[:-letters_amount])
+        sections.append(section)
 
     strand_rebuilt = "".join(sections)
     return strand_rebuilt

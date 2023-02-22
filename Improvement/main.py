@@ -10,7 +10,6 @@ def main(sections_num, letters_amount, real_edge_len, frequency, strand_len, pad
     # declassify each read by its section
     four_pow = create_convert_list(read_size)
     try:
-        # TODO: create one function after meeting Eitan?
         # classifications = create_longest_classifications(letters_amount, sections_num)
         longest_classifications = find_longest(letters_amount)
         classifications = longest_classifications[0: sections_num]
@@ -50,7 +49,6 @@ def main2_only_for_test(sections_num, letters_amount, real_edge_len, frequency, 
     # declassify each read by its section
     four_pow = create_convert_list(read_size)
     try:
-        # TODO: create one function after meeting Eitan?
         # classifications = create_longest_classifications(letters_amount, sections_num)
         longest_classifications = find_longest(letters_amount)
         classifications = longest_classifications[0: sections_num]
@@ -66,8 +64,8 @@ def main2_only_for_test(sections_num, letters_amount, real_edge_len, frequency, 
         exit(0)
     # TODO: add documentation
     reads_by_sections, max_splits_arr = declassify_reads(read_lst, frequency, letters_amount, classifications,
-                                         padding_size, paddings_hash, four_pow,
-                                         paddings_to_classifications, sections_num)
+                                                         padding_size, paddings_hash, four_pow,
+                                                         paddings_to_classifications, sections_num)
 
     # run for each section Alex's algorithm
     # TODO: currently assuming that the strand_len / sections_num is a whole number,
@@ -77,10 +75,15 @@ def main2_only_for_test(sections_num, letters_amount, real_edge_len, frequency, 
     complete_sections = run_parallel_algorithm_not_really_parallel(reads_by_sections, read_size, real_edge_len,
                                                                    special_section_length_no_padding, max_splits_arr)
 
+    for sec in complete_sections:
+        print(sec)
+        print("\n\n\n")
     if complete_sections is None:
         return None
     # remove metadata from the solution
 
-    strand_rebuilt = remove_meta_data(sections_num, complete_sections, frequency, letters_amount, read_size, max_splits_arr)
 
+    strand_rebuilt = remove_meta_data(sections_num, complete_sections, frequency, letters_amount, read_size,
+                                      max_splits_arr)
+    # print(strand_rebuilt)
     return strand_rebuilt

@@ -9,7 +9,7 @@ from Improvement import declassify_reads_improvement
 def test():
     # def main(sections_num, letters_amount, real_edge_len, frequency, strand_len, padding_size, read_size,
     #          read_lst):
-    sections_num = 10
+    sections_num = 4
     letters_amount = 3
     real_edge_len = 20
     frequency = 10
@@ -17,11 +17,11 @@ def test():
     padding_size = 30
     read_size = 100
 
-    sections_num = 4
+    sections_num = 6
     letters_amount = 2
     real_edge_len = 20
     frequency = 10
-    strand_len = 10000
+    strand_len = 200000
     padding_size = 30
     read_size = 100
 
@@ -38,7 +38,10 @@ def test():
     longest_classifications = find_longest(letters_amount)
     classifications = longest_classifications[0: sections_num]
     classified_str = classify_strand(orig_str, sections_num, frequency, classifications, padding_size)
+    # print(orig_str)
     classified_reads = ut.generate_reads(classified_str, len(classified_str), read_size)
+    print(classified_str)
+    print("\n\n\n")
     candidate_improve = main2_only_for_test(sections_num, letters_amount, real_edge_len, frequency, strand_len, padding_size,
                              read_size, read_lst=classified_reads)
     # print(f"original: {orig_str}")
