@@ -20,8 +20,7 @@ def run_section_algorithm(section_reads_lst: list, section_len, read_size,
         complete_sections_dict[section] = next(iter(candidate_results))
 
 
-def run_parallel_algorithm(reads_lst, read_size, real_edge_length,
-                           special_sections_length):
+def run_parallel_algorithm(reads_lst, read_size, real_edge_length, section_len_no_padding, max_splits_arr):
     """
     :param paddings_by_sections: A list of sections, in each item has a list of padding position
            (weather starting at beginning of read, end of read or has no padding)
@@ -41,17 +40,29 @@ def run_parallel_algorithm(reads_lst, read_size, real_edge_length,
     complete_sections = []
 
     for section in range(section_amount):
-        if 0 < section < section_amount - 1:
-            # TODO: subtract by letters_amount
-            section_len = special_sections_length + read_size
+        # if 0 < section < section_amount - 1:
+        #     # TODO: subtract by letters_amount
+        #     section_len = special_sections_length + read_size
+        #
+        # else:
+        #     section_len = special_sections_length
+        #
+        # p = Process(target=run_section_algorithm,
+        #             args=(
+        #                 reads_lst[section], int(section_len), read_size,
+        #                 real_edge_length, shared_dict, section))
+        # processes.append(p)
+        section_len = section_len_no_padding
 
-        else:
-            section_len = special_sections_length
-
+        if section != section_amount - 1:
+            # adding padding length for end of section
+            section_len += read_size - max_splits_arr[section][1]
+        if section != 0:
+            # adding padding length for start of section
+            section_len += read_size - max_splits_arr[section][0]
         p = Process(target=run_section_algorithm,
-                    args=(
-                        reads_lst[section], int(section_len), read_size,
-                        real_edge_length, shared_dict, section))
+                    args=(reads_lst[section], int(section_len), read_size,
+                          real_edge_length, shared_dict, section))
         processes.append(p)
         p.start()
 
@@ -81,7 +92,6 @@ def run_parallel_algorithm_not_really_parallel(reads_lst, read_size, real_edge_l
     # section_before padding section_after
     # section_before big_padding
     # big_padding section_after
-    print(max_splits_arr)
     section_amount = len(reads_lst)
     shared_dict = dict()
     complete_sections = []
@@ -96,7 +106,6 @@ def run_parallel_algorithm_not_really_parallel(reads_lst, read_size, real_edge_l
             # adding padding length for start of section
             section_len += read_size - max_splits_arr[section][0]
 
-        print(f"the current section running is: {section}")
         run_section_algorithm(reads_lst[section], int(section_len), read_size,
                               real_edge_length, shared_dict, section)
 
@@ -106,43 +115,3 @@ def run_parallel_algorithm_not_really_parallel(reads_lst, read_size, real_edge_l
     for section_num in range(section_amount):
         complete_sections.append(shared_dict[section_num])
     return complete_sections
-
-# def final_algorithm(sections_num, letters_amount, real_edge_len, frequency, strand_len, padding_size, read_size,
-#                     read_lst):
-#     # declassify each read by its section
-#     four_pow = create_convert_list(read_size)
-#     try:
-#         # TODO: create these two functions
-#         classifications = create_longest_classifications(letters_amount, sections_num)
-#         paddings_hash = create_padddins_hash()
-#         paddings_to_classifications = {}
-#
-#         for i in range(sections_num - 1):
-#             padding_letters = classifications[i][0] + classifications[i + 1]
-#             paddings_to_classifications[padding_letters] = [classifications[i], classifications[i + 1]]
-#
-#     except ValueError:
-#         print("Can't create this many sections with only this amount of letters")
-#         exit(0)
-#
-#     reads_by_sections, paddings_by_sections = declassify_reads(read_lst, frequency, letters_amount, classifications,
-#                                                                padding_size, paddings_hash, four_pow,
-#                                                                paddings_to_classifications, sections_num)
-#
-#     # def declassify_reads(reads, freq, letters_amount, classifications, padding_size, paddings_hash, four_pow,
-#     #                      pad_to_candidates, num_of_sections):
-#
-#     # run for each section Alex's algorithm
-#     # TODO: finish going over this algorithm, the parallel algorithm functions and remove meta data functions
-#     strand_section_len_before = strand_len / sections_num
-#     special_section_length = get_section_size(strand_section_len_before, frequency, read_size, letters_amount)
-#     complete_sections = run_parallel_algorithm(reads_by_sections, paddings_by_sections, read_size,
-#                                                real_edge_len, special_section_length,
-#                                                letters_amount)
-#
-#     if complete_sections is None:
-#         return None
-#     # remove metadata from the solution
-#     strand_rebuilt = remove_meta_data(sections_num, complete_sections, frequency, letters_amount, read_size)
-#
-#     return strand_rebuilt

@@ -1,7 +1,7 @@
 from Improvement.remove_meta_data import remove_meta_data
 from Improvement.declassify_reads_improvement import declassify_reads
 from Improvement.Utilities import *
-from Improvement.Parallel_Algorithm_Improved import run_parallel_algorithm, run_parallel_algorithm_not_really_parallel
+from Improvement.Parallel_Algorithm_Improved import run_parallel_algorithm
 from Improvement.find import find_longest
 
 
@@ -44,7 +44,7 @@ def main(sections_num, letters_amount, real_edge_len, frequency, strand_len, pad
     return strand_rebuilt
 
 
-def main2_only_for_test(sections_num, letters_amount, real_edge_len, frequency, strand_len, padding_size, read_size,
+def run_algorithm(sections_num, letters_amount, real_edge_len, frequency, strand_len, padding_size, read_size,
                         read_lst):
     # declassify each read by its section
     four_pow = create_convert_list(read_size)
@@ -72,7 +72,7 @@ def main2_only_for_test(sections_num, letters_amount, real_edge_len, frequency, 
     # change algorithm for unequal section lengths?
     strand_section_len_before = strand_len / sections_num
     special_section_length_no_padding = get_section_size(strand_section_len_before, frequency, letters_amount)
-    complete_sections = run_parallel_algorithm_not_really_parallel(reads_by_sections, read_size, real_edge_len,
+    complete_sections = run_parallel_algorithm(reads_by_sections, read_size, real_edge_len,
                                                                    special_section_length_no_padding, max_splits_arr)
 
     # for sec in complete_sections:

@@ -1,6 +1,6 @@
 import Utilities_Test as ut
 from Improvement.find import find_longest
-from Improvement.main import main,main2_only_for_test
+from Improvement.main import run_algorithm
 from Original_Algorithm.algorithm import final_algorithm
 from Improvement.add_meta_data import classify_strand
 from Improvement import declassify_reads_improvement
@@ -17,11 +17,11 @@ def test():
     padding_size = 30
     read_size = 100
 
-    sections_num = 6
+    sections_num = 10
     letters_amount = 2
     real_edge_len = 20
-    frequency = 10
-    strand_len = 180000
+    frequency = 20
+    strand_len = 1000000
     padding_size = 30
     read_size = 200
 
@@ -43,7 +43,7 @@ def test():
     print(f"reads amount: {len(classified_reads)}")
     # print(classified_str)
     # print("\n\n\n")
-    candidate_improve = main2_only_for_test(sections_num, letters_amount, real_edge_len, frequency, strand_len, padding_size,
+    candidate_improve = run_algorithm(sections_num, letters_amount, real_edge_len, frequency, strand_len, padding_size,
                              read_size, read_lst=classified_reads)
     # print(f"original: {orig_str}")
     # print(f"candidate: {candidate_improve}")
