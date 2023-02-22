@@ -16,7 +16,8 @@ def run_section_algorithm(section_reads_lst: list, section_len, read_size,
         complete_sections_dict[is_failed] = 1
 
     else:
-        complete_sections_dict[section] = candidate_results[0]
+        # if there is more than one item the algorithm fails
+        complete_sections_dict[section] = next(iter(candidate_results))
 
 
 def run_parallel_algorithm(reads_lst, read_size, real_edge_length,
@@ -80,7 +81,7 @@ def run_parallel_algorithm_not_really_parallel(reads_lst, read_size, real_edge_l
     # section_before padding section_after
     # section_before big_padding
     # big_padding section_after
-
+    print(max_splits_arr)
     section_amount = len(reads_lst)
     shared_dict = dict()
     complete_sections = []
@@ -95,7 +96,7 @@ def run_parallel_algorithm_not_really_parallel(reads_lst, read_size, real_edge_l
             # adding padding length for start of section
             section_len += read_size - max_splits_arr[section][0]
 
-
+        print(f"the current section running is: {section}")
         run_section_algorithm(reads_lst[section], int(section_len), read_size,
                               real_edge_length, shared_dict, section)
 

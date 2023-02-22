@@ -75,15 +75,17 @@ def main2_only_for_test(sections_num, letters_amount, real_edge_len, frequency, 
     complete_sections = run_parallel_algorithm_not_really_parallel(reads_by_sections, read_size, real_edge_len,
                                                                    special_section_length_no_padding, max_splits_arr)
 
-    for sec in complete_sections:
-        print(sec)
-        print("\n\n\n")
+    # for sec in complete_sections:
+    #     print(sec)
+    #     print("\n\n\n")
     if complete_sections is None:
+        print("None, failed")
         return None
     # remove metadata from the solution
 
 
     strand_rebuilt = remove_meta_data(sections_num, complete_sections, frequency, letters_amount, read_size,
                                       max_splits_arr)
+    print(special_section_length_no_padding)
     # print(strand_rebuilt)
     return strand_rebuilt

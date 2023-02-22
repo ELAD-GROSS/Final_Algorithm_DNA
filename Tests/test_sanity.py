@@ -21,9 +21,9 @@ def test():
     letters_amount = 2
     real_edge_len = 20
     frequency = 10
-    strand_len = 200000
+    strand_len = 180000
     padding_size = 30
-    read_size = 100
+    read_size = 200
 
 
 
@@ -40,8 +40,9 @@ def test():
     classified_str = classify_strand(orig_str, sections_num, frequency, classifications, padding_size)
     # print(orig_str)
     classified_reads = ut.generate_reads(classified_str, len(classified_str), read_size)
-    print(classified_str)
-    print("\n\n\n")
+    print(f"reads amount: {len(classified_reads)}")
+    # print(classified_str)
+    # print("\n\n\n")
     candidate_improve = main2_only_for_test(sections_num, letters_amount, real_edge_len, frequency, strand_len, padding_size,
                              read_size, read_lst=classified_reads)
     # print(f"original: {orig_str}")

@@ -17,11 +17,12 @@ def create_guesses(final_directed: FinalDirectedGraph, original_str_len):
     :return: A list of the strings that the filtered edge sets represent, potentially the original string, 
     or None if there are no potential string candidates """
     if final_directed.get_number_of_vertices() == 0:
+        print("No vertices for final_directed")
         return None
 
     if final_directed.get_number_of_vertices() == 1:
         for key in final_directed.dict_graph.keys():
-            return [key]
+            return {key}
     vertices_list = []
     vertex_to_index = {}
     i = 0
@@ -33,10 +34,13 @@ def create_guesses(final_directed: FinalDirectedGraph, original_str_len):
 
     candidate_edge_sets = find_candidate_edge_sets(final_directed, original_str_len, vertices_list, vertex_to_index)
     if candidate_edge_sets is None:
+        print("the candidate edge set is none, matrix stuff didn't work")
+        print(original_str_len)
         return None
     filtered_edge_sets = filter_edge_candidate_sets(candidate_edge_sets, vertex_to_index)
     list_of_candidates = []
     if len(filtered_edge_sets) == 0:
+        print("something is wrong with the filter")
         return None
     return edge_sets_to_string_list(filtered_edge_sets, vertex_to_index)
 
@@ -63,15 +67,23 @@ def find_candidate_edge_sets(final_overlap_graph: FinalDirectedGraph, original_l
 
     # if overlap_sum is smaller than the length of the original strand, then the reads didn't cover the entire strand
     if overlaps_sum <= 0:
+        print("the creating of the matrix gone wrong!")
+        print(final_overlap_graph.dict_graph.items())
         return None
 
     overlaps_matrix = fill_overlap_matrix(final_overlap_graph, overlaps_matrix, vertices_list, overlaps_sum,
                                           num_of_vertices)
     if overlaps_matrix[num_of_vertices][overlaps_sum] is None:
+        print("the matrix wasn't filled!")
+        print(final_overlap_graph.dict_graph.items())
         return None
     backtrack_all_candidate_edge_sets(overlaps_matrix, final_overlap_graph, num_of_vertices,
                                       [None for _ in range(num_of_vertices)], False, num_of_vertices, overlaps_sum,
                                       vertices_list, vertex_to_index, 0)
+    if not list_of_candidates:
+        print("the backtracking was a problem!")
+        print(final_overlap_graph.dict_graph.items())
+
     return list_of_candidates
 
 
@@ -314,6 +326,7 @@ def edge_sets_to_string_list(filtered_edge_sets, vertex_to_index):
 
         strings.add(candidate_str)
     if len(strings) == 0:
+        print("Something is worng with the edge_sets_to_string_list")
         return None
     return strings
 
